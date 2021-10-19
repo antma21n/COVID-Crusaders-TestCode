@@ -41,7 +41,7 @@ void loop() {
     digitalWrite(stepPin, HIGH); //turn on motor
     }
 
-  //door is oppen and clicks limit switch
+  //door is open and clicks limit switch
   if(digitalRead(topSwitchPin) == HIGH) {
     
     digitalWrite(dirPin, LOW);
