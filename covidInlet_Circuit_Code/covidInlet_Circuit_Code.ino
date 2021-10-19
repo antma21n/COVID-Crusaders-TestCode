@@ -49,7 +49,8 @@ void loop() {
 
     //wait for breathlyzer to accept breath and send signal to close
     if(digitalRead(covidInputPin) == HIGH) {
-      digitalWrite(stepPin, HIGH);  
+      digitalWrite(stepPin, HIGH); 
+      delayMicroseconds(2000); //delay for 2sec to make sure door opens enough so if statement is not triggered again 
       }
     }
 }
