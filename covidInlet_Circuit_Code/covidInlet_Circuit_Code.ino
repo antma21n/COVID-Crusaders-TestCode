@@ -23,6 +23,9 @@ void setup() {
   pinMode(dirPin, OUTPUT);
   pinMode(stepPin, OUTPUT);
   pinMode(ledPin, OUTPUT);
+
+  //start spinning motor to know code started
+  digitalWrite(stepPin, HIGH); //turn on motor
 }
 
 void loop() {
