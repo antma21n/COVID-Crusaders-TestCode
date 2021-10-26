@@ -4,14 +4,15 @@ const int botSwitchPin = 4; //orange
 const int topSwitchPin = 7; //yellow
 
 //declare another pin for testing if click has been made
-const int ledPin = 9; //blue
+//const int ledPin = 9; //blue
 
 void setup() {
   // put your setup code here, to run once:
+  Serial.begin(9600);
   pinMode(botSwitchPin, INPUT);
   pinMode(topSwitchPin, INPUT);
 
-  pinMode(ledPin, OUTPUT);
+  //pinMode(ledPin, OUTPUT);
 }
 
 void loop() {
@@ -21,9 +22,12 @@ void loop() {
   //topRead = digitalRead(topSwitchPin);
 
   if(digitalRead(botSwitchPin) == HIGH) {
-    digitalWrite(ledPin, HIGH);
+    //digitalWrite(ledPin, HIGH);
+    Serial.print("bot clicked");
+    
   }
   if(digitalRead(topSwitchPin) == HIGH) {
-    digitalWrite(ledPin, HIGH);
+    //digitalWrite(ledPin, HIGH);
+    Serial.print("top clicked");
   }
 }
