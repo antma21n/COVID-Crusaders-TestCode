@@ -4,6 +4,7 @@
 const int dirPin = 2;
 const int stepPin = 3;
 const int stepsPerRevolution = 500;
+bool clean = false;
 
 //limit switch circuit
 const int botSwitchPin = 4; //orange
@@ -28,26 +29,33 @@ void setup()
 //use this loop function in main code to improve spinning.
 void loop()
 {
-  // Set motor direction clockwise
-  //digitalWrite(dirPin, HIGH);
-  
-  for(int x = 0; x < stepsPerRevolution; x++)
-  {
-    if(digitalRead(botSwitchPin) == HIGH) { //door open
-      x = stepsPerRevolution;
+  //BREATHALYZER READY FOR SAMPLE
+  if(digitalRead(covidInputPin) == LOW) {
+    // Set motor direction clockwise
+    digitalWrite(dirPin, HIGH);
+    Serial.print("Opening");
+
+    if(digitalRead(botSwitchPin) == HIGH) 
+    { //door open
+      Serial.print("Opened");
+    } 
+    else 
+    {
+      for(int x = 0; x < stepsPerRevolution; x++)
+      {
+      digitalWrite(stepPin, HIGH);
+      delayMicroseconds(5000);
+      digitalWrite(stepPin, LOW);
+      delayMicroseconds(5000);
+      }
     }
-    digitalWrite(stepPin, HIGH);
-    delayMicroseconds(6000);
-    digitalWrite(stepPin, LOW);
-    delayMicroseconds(6000);
-    
   }
 
-
-  //ONLY PROCEDE BELOW IF BREATHLYZER ALLOWS
+  //BREATHALYZER PROCESSING SAMPLE
   if(digitalRead(covidInputPin) == HIGH) {
   
     delay(1000); // Wait a second
+    Serial.print("Closing");
     
     // Set motor direction counterclockwise
     digitalWrite(dirPin, LOW);
@@ -57,16 +65,20 @@ void loop()
     {
       if(digitalRead(topSwitchPin) == HIGH) { //door closed
         x = stepsPerRevolution;
-        //stop spin and clean
+        clean = true;
+      } else {
+        digitalWrite(stepPin, HIGH);
+        delayMicroseconds(500);
+        digitalWrite(stepPin, LOW);
+        delayMicroseconds(500);
       }
-      digitalWrite(stepPin, HIGH);
-      delayMicroseconds(500);
-      digitalWrite(stepPin, LOW);
-      delayMicroseconds(500);
     }
     delay(1000); // Wait a second
 
-    //or put clean here
+    if(clean == true) {
+      Serial.print("Cleaning");
+      //clean system
+    }
   
     // Set motor direction clockwise
     digitalWrite(dirPin, HIGH);
