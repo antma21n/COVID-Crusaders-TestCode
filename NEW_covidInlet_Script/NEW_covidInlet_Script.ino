@@ -1,9 +1,7 @@
-//Last Minute Engineers Test Code
-
 // Define pin connections & motor's steps per revolution
 const int dirPin = 2;
 const int stepPin = 3;
-const int stepsPerRevolution = 500;
+const int stepsPerRevolution = 200;
 bool clean = false;
 
 //limit switch circuit
@@ -29,13 +27,15 @@ void setup()
 //use this loop function in main code to improve spinning.
 void loop()
 {
+  clean = false;
+  
   //BREATHALYZER READY FOR SAMPLE
   if(digitalRead(covidInputPin) == LOW) {
     // Set motor direction clockwise
     digitalWrite(dirPin, HIGH);
-    Serial.print("Opening");
+    //Serial.print("Opening");
 
-    if(digitalRead(botSwitchPin) == HIGH) 
+    if(digitalRead(botSwitchPin) == LOW) 
     { //door open
       Serial.print("Opened");
     } 
@@ -44,9 +44,9 @@ void loop()
       for(int x = 0; x < stepsPerRevolution; x++)
       {
       digitalWrite(stepPin, HIGH);
-      delayMicroseconds(5000);
+      delayMicroseconds(1000);
       digitalWrite(stepPin, LOW);
-      delayMicroseconds(5000);
+      delayMicroseconds(1000);
       }
     }
   }
@@ -54,30 +54,36 @@ void loop()
   //BREATHALYZER PROCESSING SAMPLE
   if(digitalRead(covidInputPin) == HIGH) {
   
-    delay(1000); // Wait a second
-    Serial.print("Closing");
+    //Serial.print("Closing");
     
     // Set motor direction counterclockwise
     digitalWrite(dirPin, LOW);
   
     // Spin motor quickly
-    for(int x = 0; x < stepsPerRevolution; x++)
+    if(digitalRead(topSwitchPin) == LOW) //door closed
+    { 
+      Serial.print("Closed");
+      clean = true;
+    } 
+    else 
     {
-      if(digitalRead(topSwitchPin) == HIGH) { //door closed
-        x = stepsPerRevolution;
-        clean = true;
-      } else {
+      for(int x = 0; x < stepsPerRevolution; x++)
+      {
         digitalWrite(stepPin, HIGH);
-        delayMicroseconds(500);
+        delayMicroseconds(1000);
         digitalWrite(stepPin, LOW);
-        delayMicroseconds(500);
+        delayMicroseconds(1000);
       }
     }
-    delay(1000); // Wait a second
+    
 
     if(clean == true) {
       Serial.print("Cleaning");
+
+      delay(3000);
       //clean system
+      //this should not keep running constantly if door stays closed should only run one time. 
+      
     }
   
     // Set motor direction clockwise
