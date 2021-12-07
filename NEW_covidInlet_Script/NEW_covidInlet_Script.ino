@@ -2,19 +2,19 @@
 const int dirPin = 2;
 const int stepPin = 3;
 const int stepsPerRevolution = 200;
-const int speedDelay = 375;
+const int speedDelay = 600;
 
 //limit switch circuit
 const int botSwitchPin = 4; //orange
 const int topSwitchPin = 7; //yellow
 
 //covid input pin
-const int covidInputPin = 12; //idk
+const int covidInputPin = 13; //idk
 
-//UV pin and vars
+//UV pin and vars-
 const int ledPin = 9; //blue
 const int cleanTime = 15*1000;
-bool cleaned = false;
+bool cleaned = true;
 
 void setup()
 {
@@ -33,17 +33,18 @@ void setup()
 //use this loop function in main code to improve spinning.
 void loop()
 {
+  //Serial.print(digitalRead(covidInputPin));
   
   //BREATHALYZER READY FOR SAMPLE
-  if(digitalRead(covidInputPin) == LOW) {
-    cleaned = false;
+  if(digitalRead(covidInputPin) == HIGH) {
     digitalWrite(dirPin, HIGH); // Set motor direction clockwise
     if(digitalRead(botSwitchPin) == LOW) //door opened
     {
-      Serial.print("Opened");
+      //sample();
     } 
     else 
     {
+      cleaned = false;
       for(int x = 0; x < stepsPerRevolution; x++)
       {
       digitalWrite(stepPin, HIGH);
@@ -53,13 +54,12 @@ void loop()
       }
     }
   }
-
   //BREATHALYZER PROCESSING SAMPLE
-  if(digitalRead(covidInputPin) == HIGH) {    
+  else if(digitalRead(covidInputPin) == LOW) {    
     digitalWrite(dirPin, LOW); // Set motor direction counterclockwise
     if(digitalRead(topSwitchPin) == LOW) //door closed
     { 
-      Serial.print("Closed");
+      
       clean();
     } 
     else 
@@ -79,12 +79,19 @@ void loop()
 
 void clean()
 {
-  if(cleaned == true) 
+  Serial.print(cleaned);
+  if(cleaned == false) 
   {
+    Serial.print("Closed");
     Serial.print("Cleaning");
     digitalWrite(ledPin, HIGH);   
     delay(cleanTime);              
     digitalWrite(ledPin, LOW);   
     cleaned = true;
   }
+}
+
+void sample()
+{
+  Serial.print("opened");
 }
